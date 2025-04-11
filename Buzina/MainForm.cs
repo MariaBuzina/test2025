@@ -16,7 +16,6 @@ namespace Buzina
         public MainForm()
         {
             InitializeComponent();
-            FillData();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -32,6 +31,7 @@ namespace Buzina
         /// </summary>
         private void FillData()
         {
+            dataGridView1.ClearSelection();
             try
             {
                 MySqlConnection connection = new MySqlConnection(Connection.con);
@@ -68,8 +68,9 @@ namespace Buzina
                 dataGridView1.Columns[1].Visible = false;
                 connection.Close();
 
-                dataGridView1.ClearSelection();
                 dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dataGridView1.ClearSelection();
+
                 dataGridView1.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridView1.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }
@@ -81,7 +82,51 @@ namespace Buzina
 
         private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
         {
-            
+            if (e.Button != MouseButtons.Right)
+                return;
+
+            ContextMenu contextMenu = new ContextMenu();
+            contextMenu.MenuItems.Add(new MenuItem("Удалить", DeletePartner));
+
+            int row = dataGridView1.HitTest(e.X, e.Y).RowIndex;
+
+            dataGridView1.ClearSelection();
+            dataGridView1.Rows[row].Selected = true;
+
+            contextMenu.Show(dataGridView1, new Point(e.X, e.Y));
+        }
+
+        /// <summary>
+        /// Метод для удаления партнера
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeletePartner(object sender, EventArgs e)
+        {
+            int row = dataGridView1.SelectedRows[0].Index;
+            int id = Convert.ToInt32(dataGridView1.Rows[row].Cells["partnerID"].Value);
+
+            DialogResult dialogResult = MessageBox.Show("Вы уверены, что хотите удалить запись?", "Внимание", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (dialogResult == DialogResult.Yes)
+            {
+                try
+                {
+                    MySqlConnection connection = new MySqlConnection(Connection.con);
+                    connection.Open();
+                    MySqlCommand command = new MySqlCommand($@"UPDATE partner SET
+                                                            partnerDeleted = '1'
+                                                            WHERE partnerID = '{id}'", connection);
+                    command.ExecuteNonQuery();
+                    connection.Close();
+
+                    MessageBox.Show("Запись успешно удалена!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FillData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -97,6 +142,11 @@ namespace Buzina
                 addEditPartnerForm.ShowDialog();
                 this.Close();
             }
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            FillData();
         }
     }
 }
