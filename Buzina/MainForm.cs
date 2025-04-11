@@ -69,7 +69,6 @@ namespace Buzina
                 connection.Close();
 
                 dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-                dataGridView1.ClearSelection();
 
                 dataGridView1.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
                 dataGridView1.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
@@ -87,6 +86,7 @@ namespace Buzina
 
             ContextMenu contextMenu = new ContextMenu();
             contextMenu.MenuItems.Add(new MenuItem("Удалить", DeletePartner));
+            contextMenu.MenuItems.Add(new MenuItem("История заказов", GetHistoryPartner));
 
             int row = dataGridView1.HitTest(e.X, e.Y).RowIndex;
 
@@ -94,6 +94,22 @@ namespace Buzina
             dataGridView1.Rows[row].Selected = true;
 
             contextMenu.Show(dataGridView1, new Point(e.X, e.Y));
+        }
+
+        /// <summary>
+        /// Метод для получения истории заказов партнера
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GetHistoryPartner(object sender, EventArgs e)
+        {
+            int row = dataGridView1.SelectedRows[0].Index;
+            int id = Convert.ToInt32(dataGridView1.Rows[row].Cells["partnerID"].Value);
+
+            ViewHistoryForm viewHistoryForm = new ViewHistoryForm(id);
+            this.Visible = false;
+            viewHistoryForm.ShowDialog();
+            this.Close();
         }
 
         /// <summary>

@@ -80,6 +80,7 @@ namespace Buzina
             this.button1.TabIndex = 1;
             this.button1.Text = "Назад";
             this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // pictureBox1
             // 
@@ -126,7 +127,7 @@ namespace Buzina
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "ViewHistoryForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Мастер Пол - История";
+            this.Text = "Мастер пол - История";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();

@@ -276,7 +276,7 @@ namespace Buzina
             this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "AddEditPartnerForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Мастер Пол - Добавление / Редактирование партнера";
+            this.Text = "Мастер пол - Добавление / Редактирование партнера";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
