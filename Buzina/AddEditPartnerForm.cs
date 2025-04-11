@@ -18,6 +18,36 @@ namespace Buzina
             FillPartnerType();
         }
 
+        int idPartner;
+
+        /// <summary>
+        /// Метод для подстановки данных о партнере в поля для редактирования
+        /// </summary>
+        /// <param name="id">Идентификатор партнера</param>
+        public AddEditPartnerForm(int id)
+        {
+            InitializeComponent();
+            FillPartnerType();
+
+            idPartner = id;
+            MySqlConnection connection = new MySqlConnection(Connection.con);
+            connection.Open();
+            MySqlCommand command = new MySqlCommand($@"SELECT * FROM partner WHERE partnerID = '{id}'", connection);
+            MySqlDataReader reader = command.ExecuteReader();
+
+            while (reader.Read())
+            {
+                textBox1.Text = reader[2].ToString();
+                textBox2.Text = reader[8].ToString();
+                textBox3.Text = reader[6].ToString();
+                textBox4.Text = reader[3].ToString();
+                textBox6.Text = reader[4].ToString();
+                maskedTextBox1.Text = reader[5].ToString();
+                comboBox1.SelectedValue = reader[1].ToString();
+            }
+            connection.Close();
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             MainForm mainForm = new MainForm();
@@ -138,7 +168,34 @@ namespace Buzina
                 }
                 else
                 {
-                   
+                    try
+                    {
+                        MySqlConnection connection = new MySqlConnection(Connection.con);
+                        connection.Open();
+                        MySqlCommand command = new MySqlCommand($@"UPDATE partner SET
+                                                                partnerType = '{comboBox1.SelectedValue}',
+                                                                partnerTitle = '{textBox1.Text}',
+                                                                partnerDirector = '{textBox4.Text}',
+                                                                partnerEmail = '{textBox6.Text}',
+                                                                partnerPhone = '{maskedTextBox1.Text}',
+                                                                partnerAddress = '{textBox3.Text}',
+                                                                partnerRating = '{textBox2.Text}'
+                                                                WHERE partnerID = '{idPartner}'", connection);
+                        command.ExecuteNonQuery();
+                        connection.Close();
+
+                        MessageBox.Show("Запись успешно отредактирована", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        MainForm mainForm = new MainForm();
+                        this.Visible = false;
+                        mainForm.ShowDialog();
+                        this.Close();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

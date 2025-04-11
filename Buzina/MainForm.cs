@@ -70,10 +70,32 @@ namespace Buzina
 
                 dataGridView1.ClearSelection();
                 dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dataGridView1.Columns[2].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                dataGridView1.Columns[3].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void dataGridView1_MouseDown(object sender, MouseEventArgs e)
+        {
+            
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            int row = e.RowIndex;
+            if (row != -1)
+            {
+                int id = Convert.ToInt32(dataGridView1.Rows[row].Cells["partnerID"].Value);
+
+                AddEditPartnerForm addEditPartnerForm = new AddEditPartnerForm(id);
+                addEditPartnerForm.button1.Text = "Редактировать";
+                this.Visible = false;
+                addEditPartnerForm.ShowDialog();
+                this.Close();
             }
         }
     }
